@@ -39,4 +39,4 @@ jobs:
     
     # Publish Docker Container to Google Cloud Registry
     - name: Publish Container
-      run: gcloud builds submit --tag gcr.io/dopewars.shammils/${{ github.event.repository.name }}
+      run: gcloud builds submit --tag gcr.io/dopewars-shammils/${{ github.event.repository.name }}
