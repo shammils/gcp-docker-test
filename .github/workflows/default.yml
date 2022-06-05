@@ -11,32 +11,45 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
-      
+
     steps:
-    
+
     - name: Checkout
       uses: actions/checkout@v3
-    
+
     # Build Docker Image
     - name: Build Docker Image
       run: docker build . --file Dockerfile --tag ${{ github.event.repository.name }}
-      
+
     # Authenticate job against GCP account
     - name: Authenticate
       uses: 'google-github-actions/auth@v0'
       with:
         workload_identity_provider: 'projects/945819825863/locations/global/workloadIdentityPools/container-pool/providers/container-provider'
         service_account: 'container-service@dopewars-shammils.iam.gserviceaccount.com'
-    
+
     # Install and setup gcloud. should probably do this earlier
     - name: Set up GCloud SDK
       uses: 'google-github-actions/setup-gcloud@v0'
-      
+
     # DEBUG: See if this is actually working
     - name: DEBUG
       run: |-
         gcloud iam service-accounts list
-    
+
     # Publish Docker Container to Google Cloud Registry
     - name: Publish Container
       run: gcloud builds submit --tag gcr.io/dopewars-shammils/${{ github.event.repository.name }}
+
+    # Deploy Image to Cloud Run
+    # <un>authenticated traffic cannot be altered from CI
+    - name: Deploy
+      uses: 'google-github-actions/deploy-cloudrun@v0'
+      with:
+        service: '${{ github.event.repository.name }}'
+        image: 'gcr.io/dopewars-shammils/${{ github.event.repository.name }}'
+        region: 'us-central1'
+
+    # DEBUG Show output of Deploy
+    - name: DEBUG Deploy
+      run: 'echo ${{ steps.deploy.outputs.url }}'
