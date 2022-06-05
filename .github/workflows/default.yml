@@ -19,7 +19,7 @@ jobs:
     
     # Build Docker Image
     - name: Build Docker Image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag ${{ github.repository }}
       
     # Authenticate job against GCP account
     - name: Authenticate
@@ -38,4 +38,5 @@ jobs:
         gcloud iam service-accounts list
     
     # Publish Docker Container to Google Cloud Registry 
-    
+    - name: Publish Container
+      run: gcloud builds submit --tag gcr.io/dopewars.shammils/${{ github.repository }}
