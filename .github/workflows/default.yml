@@ -37,6 +37,6 @@ jobs:
       run: |-
         gcloud iam service-accounts list
     
-    # Publish Docker Container to Google Cloud Registry 
+    # Publish Docker Container to Google Cloud Registry
     - name: Publish Container
       run: gcloud builds submit --tag gcr.io/dopewars.shammils/${{ github.repository }}
