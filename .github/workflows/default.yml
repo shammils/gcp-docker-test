@@ -9,5 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    
+    - id: 'auth'
+    - name: Authenticate GCP account
+      uses: 'google-github-actions/auth@v0.6.0'
+      with:
+        workload_identity_provider: 'projects/945819825863/locations/global/workloadIdentityPools/container-pool/providers/container-provider'
+        service_account: 'container-service@dopewars-shammils.iam.gserviceaccount.com'
+    
+    - id: 'build'
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
