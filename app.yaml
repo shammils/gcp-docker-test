@@ -1,2 +1,3 @@
+service: discordbot
 runtime: custom
 env: flex
