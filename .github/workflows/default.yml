@@ -38,8 +38,10 @@ jobs:
         gcloud iam service-accounts list
 
     # Publish Docker Container to Google Cloud Registry
+    # log dir specified to work around permissions issue https://issuetracker.google.com/issues/134928412?pli=1
+    # storage bucket must be created manually for this to work
     - name: Publish Container
-      run: gcloud builds submit --tag gcr.io/dopewars-shammils/${{ github.event.repository.name }}
+      run: gcloud builds submit --tag gcr.io/dopewars-shammils/${{ github.event.repository.name }} --gcs-log-dir=gs://container-service-logs
 
     # Deploy Image to Cloud Run
     # <un>authenticated traffic cannot be altered from CI
@@ -50,6 +52,6 @@ jobs:
         image: 'gcr.io/dopewars-shammils/${{ github.event.repository.name }}'
         region: 'us-central1'
 
-    # DEBUG Show output of Deploy
+    # DEBUG Show output of Deploy(doesnt work)
     - name: DEBUG Deploy
       run: 'echo ${{ steps.deploy.outputs.url }}'
